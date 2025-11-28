@@ -52,7 +52,7 @@ class OrderService
     private function lockBooksForItems(OrderData $orderDto)
     {
         $bookIds = collect($orderDto->items)
-            ->pluck('bookId')     // теперь это свойство реально есть в OrderItemData
+            ->pluck('bookId')
             ->unique()
             ->sort()
             ->values();
