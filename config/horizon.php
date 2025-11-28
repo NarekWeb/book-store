@@ -98,6 +98,7 @@ return [
 
     'waits' => [
         'redis:default' => 60,
+        'redis:mail'    => 60,
     ],
 
     /*
@@ -197,34 +198,68 @@ return [
     */
 
     'defaults' => [
-        'supervisor-1' => [
-            'connection' => 'redis',
-            'queue' => ['default'],
-            'balance' => 'auto',
+
+        'supervisor-default' => [
+            'connection'          => 'redis',
+            'queue'               => ['default'],
+            'balance'             => 'auto',
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 3,
-            'maxProcesses' => 10,
-            'tries' => 3,
-//            'maxTime' => 0,
-//            'maxJobs' => 0,
-//            'memory' => 128,
-//            'timeout' => 60,
-//            'nice' => 0,
+            'minProcesses'        => 3,
+            'maxProcesses'        => 10,
+            'tries'               => 3,
+            // 'maxTime' => 0,
+            // 'maxJobs' => 0,
+            // 'memory'  => 128,
+            // 'timeout' => 60,
+            // 'nice'    => 0,
+        ],
+
+        'supervisor-mail' => [
+            'connection'          => 'redis',
+            'queue'               => ['mail'],
+            'balance'             => 'simple',
+            'autoScalingStrategy' => 'time',
+            'minProcesses'        => 2,
+            'maxProcesses'        => 10,
+            'tries'               => 3,
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Environment Specific Configuration
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
     'environments' => [
+
         'production' => [
-            'supervisor-1' => [
-                'maxProcesses' => 10,
+            'supervisor-default' => [
+                'minProcesses'    => 5,
+                'maxProcesses'    => 20,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+
+            'supervisor-mail' => [
+                'minProcesses'    => 5,
+                'maxProcesses'    => 15,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
         ],
 
         'local' => [
-            'supervisor-1' => [
+            'supervisor-default' => [
+                'minProcesses' => 1,
                 'maxProcesses' => 3,
+            ],
+
+            'supervisor-mail' => [
+                'minProcesses' => 1,
+                'maxProcesses' => 2,
             ],
         ],
     ],

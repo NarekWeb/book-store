@@ -77,6 +77,22 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    scheduler:
+        image: sail-8.4/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+        working_dir: /var/www/html
+        command: php artisan schedule:work
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - redis
 networks:
     sail:
         driver: bridge

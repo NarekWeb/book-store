@@ -26,9 +26,7 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request): JsonResponse
     {
         $dto = $request->toDto();
-//        dd($dto);
         $order = $this->orderService->createOrder($dto);
-//        dd($order);
 
         return (new OrderResource($order))
             ->response()
